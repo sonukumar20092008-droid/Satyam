@@ -1,5 +1,5 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/Sanju.html" }
+    { "source": "/(.*)", "destination": "/qr-fix.html" }
   ]
 }
