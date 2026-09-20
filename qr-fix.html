@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loading…</title>
+</head>
+<body>
+  <p>Loading…</p>
+  <script>
+    (async () => {
+      const source = 'https://raw.githubusercontent.com/sonukumar20092008-droid/Satyam/main/Sanju.html';
+      const qr = 'https://raw.githubusercontent.com/sonukumar20092008-droid/Satyam/main/qr-theme.jpg';
+      const response = await fetch(source + '?v=' + Date.now(), { cache: 'no-store' });
+      if (!response.ok) throw new Error('Unable to load the site');
+      let html = await response.text();
+      html = html.replaceAll(/https:\/\/api\.qrserver\.com\/v1\/create-qr-code\/\?size=250x250&data=upi:\/\/pay\?pa=rajanbhai8989@fam(?:&pn=RAJAN%20KUMAR&cu=INR)?/g, qr);
+      document.open();
+      document.write(html);
+      document.close();
+    })().catch((error) => {
+      document.body.innerHTML = '<p>Site temporarily unavailable. Please refresh.</p>';
+      console.error(error);
+    });
+  </script>
+</body>
+</html>
