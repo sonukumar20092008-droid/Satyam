@@ -11,10 +11,32 @@
     (async () => {
       const source = 'https://raw.githubusercontent.com/sonukumar20092008-droid/Satyam/main/Sanju.html';
       const qr = 'https://raw.githubusercontent.com/sonukumar20092008-droid/Satyam/main/qr-theme.jpg';
+      const upi = 'notx-satyam4444@fam';
+
+      // Override the persisted browser settings as well as the HTML defaults.
+      // The app stores its data in localStorage, so changing only the image tag
+      // would otherwise leave the old QR visible after updateWalletQR() runs.
+      try {
+        const key = 'satyam_store_db';
+        const saved = JSON.parse(localStorage.getItem(key) || 'null');
+        if (saved && typeof saved === 'object') {
+          saved.settings = saved.settings || {};
+          saved.settings.qrImage = qr;
+          saved.settings.upiId = upi;
+          localStorage.setItem(key, JSON.stringify(saved));
+        }
+      } catch (error) {
+        console.warn('Could not update saved QR settings', error);
+      }
+
       const response = await fetch(source + '?v=' + Date.now(), { cache: 'no-store' });
       if (!response.ok) throw new Error('Unable to load the site');
       let html = await response.text();
-      html = html.replaceAll(/https:\/\/api\.qrserver\.com\/v1\/create-qr-code\/\?size=250x250&data=upi:\/\/pay\?pa=rajanbhai8989@fam(?:&pn=RAJAN%20KUMAR&cu=INR)?/g, qr);
+
+      // Replace every old generated QR URL, including defaults and settings.
+      html = html.replace(/https:\/\/api\.qrserver\.com\/v1\/create-qr-code\/[^'"\\]*/g, qr);
+      html = html.replace(/rajanbhai8989@fam/g, upi);
+
       document.open();
       document.write(html);
       document.close();
